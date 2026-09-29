@@ -1,0 +1,18 @@
+{
+  "datasetVersion": "N02-25-geometry-v1",
+  "metricVersion": "exact-edge-spherical-mm-v1",
+  "lineGroups": 596,
+  "sections": 20956,
+  "uniqueCoordinateEdges": 377620,
+  "totalLengthMm": "27327280458",
+  "validationStatus": "provisional",
+  "excludedClaims": [
+    "official_operating_mileage",
+    "verified_nationwide_completeness",
+    "physical_parallel_track_deduplication"
+  ],
+  "sourceSHA256": "210debaf2d453f6c01cc5f0170dbe2e85b304e90a8a82f04d453443910f3786d",
+  "serviceOverlays": 2,
+  "displayedLines": 598,
+  "serviceOverlayVersion": "mini-shinkansen-local-v1"
+}

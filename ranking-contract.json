@@ -1,0 +1,1 @@
+{"schemaVersion":1,"status":"not_connected","endpointReserved":"/v1/me/ranking","implementedHttpEndpoint":false,"consentDefault":false,"requiredCohortKeys":["scopeId","networkVersion","metricVersion","titleRuleVersion"],"minimumParticipants":20,"response":{"rank":null,"surpassedPercent":null,"participantCount":null,"snapshotAt":null,"reason":"not_connected"}}

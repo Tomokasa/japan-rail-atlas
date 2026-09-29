@@ -1,0 +1,301 @@
+/* ============================================================
+   polish.css — 视觉精修与微交互层
+   叠加于 atelier.css / export.css 之后，不改变既有结构，
+   只做：设计令牌统一、动效手感、无障碍焦点、优雅降级。
+   ============================================================ */
+
+:root {
+  /* 精修后的暖纸调色板（在原有基础上收敛对比与温度） */
+  --paper: #f5f1e8;
+  --paper-soft: #faf7f0;
+  --surface: #fffcf5;
+  --ink: #333b37;
+  --ink-strong: #232a27;
+  --muted: #767c73;
+  --muted-soft: #969b8f;
+  --line: #e2ddd1;
+  --line-soft: #ebe6da;
+  --moss: #526a59;
+  --moss-deep: #3c5544;
+  --moss-tint: #eef2ea;
+  --gold: #b79755;
+  --gold-soft: #d9c08a;
+  --gold-ink: #6c4b1c;
+  --shinkansen: #4d7d86;
+  --jr: #5a7f6d;
+
+  /* 动效节奏 */
+  --ease-out: cubic-bezier(.22, .61, .36, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+  --dur-fast: 140ms;
+  --dur-med: 260ms;
+  --dur-slow: 460ms;
+
+  /* 阴影层级 */
+  --shadow-1: 0 1px 2px rgba(60, 58, 37, .06);
+  --shadow-2: 0 4px 14px rgba(60, 58, 37, .08);
+  --shadow-3: 0 14px 40px rgba(60, 58, 37, .14);
+  --shadow-4: 0 22px 70px rgba(60, 58, 37, .20);
+}
+
+/* ---------- 基底 ---------- */
+html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+body {
+  font-variant-numeric: tabular-nums;
+  letter-spacing: .002em;
+}
+
+/* ---------- 顶栏 ---------- */
+header.atlas-header {
+  background: linear-gradient(180deg, rgba(245, 241, 232, .92), rgba(245, 241, 232, .72));
+  backdrop-filter: saturate(1.1) blur(10px);
+  -webkit-backdrop-filter: saturate(1.1) blur(10px);
+  position: relative;
+  z-index: 20;
+}
+
+/* ---------- 按钮手感 ---------- */
+.map-area nav button,
+.drawer-toggle,
+.guide-link,
+.line-card button,
+#export-dialog button,
+.region-card,
+.hoverbar button,
+#nearby button {
+  transition:
+    transform var(--dur-fast) var(--ease-out),
+    background-color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-med) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+  will-change: transform;
+}
+
+.map-area nav button:hover,
+.hoverbar button:hover,
+#nearby button:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-2);
+}
+.map-area nav button:active,
+.hoverbar button:active,
+#nearby button:active,
+.line-card button:active,
+#export-dialog button:active,
+.drawer-toggle:active {
+  transform: translateY(0) scale(.97);
+  transition-duration: 60ms;
+}
+
+/* 主操作按钮：柔和抬升 + 微光 */
+.primary {
+  position: relative;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .18), var(--shadow-1);
+}
+.primary:hover {
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), var(--shadow-2);
+}
+.primary:active { transform: translateY(0) scale(.98); }
+
+/* ---------- 焦点态（键盘可达） ---------- */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+a:focus-visible,
+summary:focus-visible,
+svg:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* ---------- 覆盖率数字 ---------- */
+.stats strong {
+  letter-spacing: -.065em;
+  background: linear-gradient(180deg, var(--ink-strong) 0%, #4a524c 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 进度条：平滑增长 + 端点圆润 + 柔和光晕 */
+.stats progress {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: #e7e2d5;
+}
+.stats progress::-webkit-progress-bar { background: #e7e2d5; border-radius: 999px; }
+.stats progress::-webkit-progress-value {
+  background: linear-gradient(90deg, var(--moss), var(--shinkansen));
+  border-radius: 999px;
+  transition: width var(--dur-slow) var(--ease-out);
+  box-shadow: 0 0 10px rgba(82, 106, 89, .35);
+}
+.stats progress::-moz-progress-bar {
+  background: linear-gradient(90deg, var(--moss), var(--shinkansen));
+  border-radius: 999px;
+  transition: width var(--dur-slow) var(--ease-out);
+}
+
+/* ---------- 徽章光泽扫过 ---------- */
+.rank-medal {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+.rank-medal::after {
+  content: "";
+  position: absolute;
+  inset: -40%;
+  background: linear-gradient(115deg, transparent 40%, rgba(255, 255, 255, .55) 50%, transparent 60%);
+  transform: translateX(-120%);
+  animation: medal-shine 4.2s var(--ease-out) infinite;
+  mix-blend-mode: screen;
+  pointer-events: none;
+}
+@keyframes medal-shine {
+  0% { transform: translateX(-120%); }
+  55%, 100% { transform: translateX(120%); }
+}
+
+/* 地区卡片：悬停抬升 */
+.region-card {
+  border-radius: 12px;
+  cursor: default;
+}
+.region-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-2);
+  border-color: var(--gold-soft);
+}
+.region-card progress {
+  height: 5px;
+  border-radius: 999px;
+  overflow: hidden;
+  appearance: none;
+  -webkit-appearance: none;
+  border: 0;
+  background: #e7e2d5;
+}
+.region-card progress::-webkit-progress-value { background: var(--moss); border-radius: 999px; transition: width var(--dur-slow) var(--ease-out); }
+.region-card.unlocked progress::-webkit-progress-value { background: var(--gold); }
+
+/* 附加荣誉徽章：轻微浮现 */
+.extra-honor {
+  transition: transform var(--dur-fast) var(--ease-spring), box-shadow var(--dur-med) var(--ease-out);
+  animation: honor-pop var(--dur-slow) var(--ease-spring) both;
+}
+.extra-honor:hover { transform: translateY(-1px); box-shadow: var(--shadow-2); }
+@keyframes honor-pop {
+  from { opacity: 0; transform: translateY(6px) scale(.92); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ---------- 地图 ---------- */
+#mapwrap { position: relative; }
+.land {
+  fill: #faf8f1;
+  transition: fill var(--dur-slow) var(--ease-out);
+}
+/* 悬停线路：可拾取时轻微加亮 */
+#map.is-pickable .route:not(.fast) { transition: stroke-width var(--dur-fast) var(--ease-out), opacity var(--dur-fast); }
+.route.selected {
+  stroke: var(--moss);
+  filter: drop-shadow(0 0 4px rgba(82, 106, 89, .35));
+}
+/* 已走过线路：柔和金色光晕 */
+path.travel {
+  stroke: #c29a4e;
+  filter: drop-shadow(0 0 3px rgba(194, 154, 78, .45));
+}
+.station-label { font-weight: 600; }
+.station { filter: drop-shadow(0 0 2px rgba(51, 59, 55, .5)); }
+
+/* 拖拽手感 */
+#map { cursor: grab; }
+#map.is-dragging { cursor: grabbing; }
+
+/* ---------- 线路卡片入场 ---------- */
+.line-card:not([hidden]),
+#nearby:not([hidden]) {
+  animation: card-in var(--dur-med) var(--ease-spring) both;
+  transform-origin: top center;
+}
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(10px) scale(.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* 卡片关闭按钮微交互 */
+.card-heading button,
+.drawer-heading button,
+.export-heading button {
+  border-radius: 8px;
+}
+.card-heading button:hover,
+.drawer-heading button:hover,
+.export-heading button:hover {
+  background: rgba(82, 106, 89, .1);
+  transform: rotate(90deg);
+}
+
+/* ---------- 侧边抽屉入场 ---------- */
+aside#sidebar:not([hidden]) {
+  animation: drawer-in var(--dur-med) var(--ease-out) both;
+}
+@keyframes drawer-in {
+  from { opacity: 0; transform: translateX(-18px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* ---------- 对话框 ---------- */
+#export-dialog[open] {
+  animation: dialog-in var(--dur-med) var(--ease-spring) both;
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(16px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+#export-dialog::backdrop {
+  background: rgba(41, 47, 34, .4);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fade-in var(--dur-med) both;
+}
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+
+/* ---------- 旅程行 ---------- */
+.trip-row { transition: background var(--dur-fast) var(--ease-out); border-radius: 8px; padding: 8px; }
+.trip-row:hover { background: var(--moss-tint); }
+.trip-preview { transition: transform var(--dur-fast) var(--ease-out); }
+.trip-preview:active { transform: scale(.99); }
+
+/* ---------- 悬停提示条 ---------- */
+.hoverbar #hover {
+  transition: color var(--dur-fast) var(--ease-out), font-weight var(--dur-fast);
+}
+
+/* ---------- 图例 ---------- */
+.legend span { transition: opacity var(--dur-fast); }
+
+/* ---------- 尊重系统减弱动效偏好 ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+  }
+  .rank-medal::after { display: none; }
+}
+
+/* ---------- 移动端：触控目标与手感 ---------- */
+@media (max-width: 600px) {
+  .map-area nav button { min-height: 40px; }
+  .line-card:not([hidden]) { animation-duration: var(--dur-fast); }
+}

@@ -1,0 +1,7 @@
+(()=>{'use strict';
+// Index projected segments once; pointer queries inspect only nearby grid cells.
+function createIndex(lines,project,cellSize=24){const grid=new Map();let segmentCount=0;const key=(x,y)=>x+','+y;
+for(const line of lines)for(const coordinates of line.geometry.coordinates){let a=project(coordinates[0]);for(let i=1;i<coordinates.length;i++){const b=project(coordinates[i]),segment={line,a,b};segmentCount++;for(let x=Math.floor(Math.min(a[0],b[0])/cellSize);x<=Math.floor(Math.max(a[0],b[0])/cellSize);x++)for(let y=Math.floor(Math.min(a[1],b[1])/cellSize);y<=Math.floor(Math.max(a[1],b[1])/cellSize);y++){const k=key(x,y);if(!grid.has(k))grid.set(k,[]);grid.get(k).push(segment)}a=b;}}
+function query(point,radius){const seen=new Set(),best=new Map();for(let x=Math.floor((point[0]-radius)/cellSize);x<=Math.floor((point[0]+radius)/cellSize);x++)for(let y=Math.floor((point[1]-radius)/cellSize);y<=Math.floor((point[1]+radius)/cellSize);y++)for(const seg of grid.get(key(x,y))||[]){if(seen.has(seg))continue;seen.add(seg);const {a,b,line}=seg,dx=b[0]-a[0],dy=b[1]-a[1],t=Math.max(0,Math.min(1,((point[0]-a[0])*dx+(point[1]-a[1])*dy)/(dx*dx+dy*dy||1))),d=Math.hypot(point[0]-a[0]-t*dx,point[1]-a[1]-t*dy);if(d<=radius&&d<(best.get(line.id)?.distance??Infinity))best.set(line.id,{line,distance:d})}return [...best.values()].sort((a,b)=>a.distance-b.distance||a.line.id.localeCompare(b.line.id));}
+return {query,segmentCount};}
+window.RailPicking={createIndex};})();
